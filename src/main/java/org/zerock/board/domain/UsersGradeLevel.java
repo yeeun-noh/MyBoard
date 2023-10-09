@@ -20,6 +20,6 @@ public enum UsersGradeLevel {
                 return usersGradeLevel;
             }
         }
-        throw new IllegalAccessException();
+        throw new IllegalAccessException("Invalid BoardTypeDefiner value===> " + i);
     }
 }

@@ -1,10 +1,8 @@
 package org.zerock.board.domain;
 
 import lombok.*;
-import org.springframework.security.core.userdetails.User;
 
 import javax.persistence.*;
-import javax.xml.stream.events.Comment;
 import java.util.Date;
 import java.util.List;
 
@@ -14,20 +12,17 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString(exclude = "id")
-public class Post {
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private int boardId;
-
-    private String title;
+    @Column(nullable = false)
+    private int postId;
 
     @Column(columnDefinition = "LONGTEXT")
     private String content;
-
-    private int viewCount;
 
     private Date createdDate;
 
@@ -35,17 +30,21 @@ public class Post {
 
     private Date deletedDate;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "postId", insertable = false, updatable = false)
-    private List<PostActivityHistory> activityHistories;
-
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "writerId", referencedColumnName = "id")
     private Users writer;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parentCommentId", referencedColumnName = "id", nullable = true)
+    private Comment parentComment = null;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parentComment", cascade = CascadeType.ALL)
+    @OrderBy("createdDate")
+    private List<Comment> childComment = null;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "postId", insertable = false, updatable = false)
-    private List<Comment> comments;
+    @JoinColumn(name = "commentId", insertable = false, updatable = false)
+    private List<CommentActivityHistory> activityHistories = null;
 
     public long getLikesCount() {
         long count = activityHistories.stream()

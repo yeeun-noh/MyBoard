@@ -4,13 +4,13 @@ public enum ActivityHistoryTypes {
 
     View(1), Like(2), Dislike(3);
 
-    private final int valiue;
+    private final int value;
 
-    ActivityHistoryTypes(int valiue) {
-        this.valiue = valiue;
+    ActivityHistoryTypes(int value) {
+        this.value = value;
     }
 
-    public int getValiue() {
-        return valiue;
+    public int getValue() {
+        return value;
     }
 }
