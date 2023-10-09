@@ -10,7 +10,7 @@ import java.util.Date;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "id")
+@ToString
 public class PostSave { // 다른 유저 Post 저장 가능
 
     @Id

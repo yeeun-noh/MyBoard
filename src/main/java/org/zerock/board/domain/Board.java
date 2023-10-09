@@ -4,14 +4,14 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
-@Builder
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString(exclude = "id")
+@Setter
+@ToString
 public class Board {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -30,17 +30,21 @@ public class Board {
 
     private int sortOrder;
 
-    private int writableGrade; //등급별 글쓰기 권한
+    private int writableGrade;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parentBoardId", referencedColumnName = "id", nullable = false)
+    @JoinColumn(referencedColumnName = "id", nullable = true)
     private Board parentBoard = null;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "type", referencedColumnName = "type", nullable = false)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parentBoard", cascade = CascadeType.REMOVE)
+    @OrderBy("sortOrder")
+    private List<Board> childBoards;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(referencedColumnName = "type", nullable = false)
     private BoardType boardType;
 
-    public boolean ableToWrite(int userGrade) {
+    public boolean canWritable(int userGrade){
         return (writableGrade & userGrade) > 0;
     }
 }

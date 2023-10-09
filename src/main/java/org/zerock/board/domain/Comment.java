@@ -7,11 +7,8 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Builder
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString(exclude = "id")
+@Setter
 public class Comment {
 
     @Id
@@ -31,28 +28,28 @@ public class Comment {
     private Date deletedDate;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "writerId", referencedColumnName = "id")
+    @JoinColumn(referencedColumnName = "id")
     private Users writer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parentCommentId", referencedColumnName = "id", nullable = true)
+    @JoinColumn(referencedColumnName = "id", nullable = true)
     private Comment parentComment = null;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parentComment", cascade = CascadeType.ALL)
     @OrderBy("createdDate")
-    private List<Comment> childComment = null;
+    private List<Comment> childComments;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "commentId", insertable = false, updatable = false)
-    private List<CommentActivityHistory> activityHistories = null;
+    @JoinColumn(insertable = false, updatable = false)
+    private List<CommentActivityHistory> activityHistories;
 
-    public long getLikesCount() {
+    public long getLikesCount(){
         long count = activityHistories.stream()
                 .filter(history -> history.getType() == ActivityHistoryTypes.Like.getValue()).count();
         return count;
     }
 
-    public long getDislikesCount() {
+    public long getDislikesCount(){
         long count = activityHistories.stream()
                 .filter(history -> history.getType() == ActivityHistoryTypes.Dislike.getValue()).count();
         return count;

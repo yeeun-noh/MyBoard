@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "id")
+@ToString
 public class PostFile {
 
     @Id

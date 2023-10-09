@@ -3,14 +3,12 @@ package org.zerock.board.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-@Builder
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "id")
-public class BoardType {
+public class BoardType implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -10,7 +10,7 @@ import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Optional;
 
-public interface PostRepository  extends JpaRepository<Post, Integer> {
+public interface PostRepository extends JpaRepository<Post, Integer> {
 
     Optional<Post> findById(int postID);
 
@@ -24,25 +24,19 @@ public interface PostRepository  extends JpaRepository<Post, Integer> {
             "WHERE p.boardId = :boardId AND " +
             "      (:title IS NOT NULL AND p.title LIKE CONCAT('%', COALESCE(:title, ''), '%') OR " +
             "      :content IS NOT NULL AND p.content LIKE CONCAT('%', COALESCE(:content, ''), '%') OR " +
-            "      p.writer.id = ALL (SELECT u.id " +
-            "                        FROM Users u" +
-            "                        WHERE u.nickname LIKE CONCAT('%', COALESCE(:nickname,''), '%'))) " +
+            "      p.writer.id = ALL (SELECT u.id FROM Users u WHERE u.nickname LIKE CONCAT('%', COALESCE(:nickname,''), '%'))) " +
             "ORDER BY p.createdDate DESC")
     Page<Post> findAllByCondition(@Param("boardId") int boardId, @Param("title") String title,
                                   @Param("content") String content, @Param("nickname") String nickname,
                                   Pageable pageable);
 
     @Query("SELECT p FROM Post p " +
-            "WHERE (0 < (SELECT count(pa.id) " +
-            "           FROM PostActivityHistory pa " +
+            "WHERE (0 < (SELECT count(pa.id) FROM PostActivityHistory pa " +
             "           WHERE p.id = pa.postId AND pa.type = :likeType)) AND " +
             "      (:title IS NOT NULL AND p.title LIKE CONCAT('%', COALESCE(:title, ''), '%') OR " +
             "      :content IS NOT NULL AND p.content LIKE CONCAT('%', COALESCE(:content, ''), '%') OR " +
-            "      p.writer.id = ALL (SELECT u.id " +
-            "                        FROM Users u " +
-            "                        WHERE u.nickname LIKE CONCAT('%', COALESCE(:nickname,''), '%'))) AND " +
-            "      (0 < (SELECT count(type) " +
-            "             FROM Board b " +
+            "      p.writer.id = ALL (SELECT u.id FROM Users u WHERE u.nickname LIKE CONCAT('%', COALESCE(:nickname,''), '%'))) AND " +
+            "      (0 < (SELECT count(b.boardType) FROM Board b " +
             "             WHERE p.boardId = b.id AND b.boardType.type = org.zerock.board.domain.BoardTypeDefiner.Common)) " +
             "ORDER BY p.createdDate DESC")
     Page<Post> findBestsByCondition(@Param("title") String title,

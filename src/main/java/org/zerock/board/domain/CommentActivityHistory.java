@@ -13,7 +13,7 @@ import java.util.Date;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "id")
+@ToString
 public class CommentActivityHistory {
 
     @Id

@@ -1,21 +1,16 @@
 package org.zerock.board.domain;
 
 import lombok.*;
-import org.springframework.security.core.userdetails.User;
 
 import javax.persistence.*;
-import javax.xml.stream.events.Comment;
 import java.util.Date;
 import java.util.List;
 
 @Entity
-@Builder
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString(exclude = "id")
+@Setter
+@ToString(exclude = "comments")
 public class Post {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -36,24 +31,24 @@ public class Post {
     private Date deletedDate;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "postId", insertable = false, updatable = false)
+    @JoinColumn(insertable = false, updatable = false)
     private List<PostActivityHistory> activityHistories;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "writerId", referencedColumnName = "id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
     private Users writer;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "postId", insertable = false, updatable = false)
+    @JoinColumn(insertable = false, updatable = false)
     private List<Comment> comments;
 
-    public long getLikesCount() {
+    public long getLikesCount(){
         long count = activityHistories.stream()
                 .filter(history -> history.getType() == ActivityHistoryTypes.Like.getValue()).count();
         return count;
     }
 
-    public long getDislikesCount() {
+    public long getDislikesCount(){
         long count = activityHistories.stream()
                 .filter(history -> history.getType() == ActivityHistoryTypes.Dislike.getValue()).count();
         return count;
