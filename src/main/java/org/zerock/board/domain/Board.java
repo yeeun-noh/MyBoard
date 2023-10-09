@@ -26,6 +26,8 @@ public class Board {
 
     private Date modifiedDate;
 
+    private Date deletedDate;
+
     private int sortOrder;
 
     private int writableGrade; //등급별 글쓰기 권한
