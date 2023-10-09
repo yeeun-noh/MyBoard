@@ -41,7 +41,7 @@ public class Post {
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "writerId", referencedColumnName = "id")
-    private User writer;
+    private Users writer;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "postId", insertable = false, updatable = false)
